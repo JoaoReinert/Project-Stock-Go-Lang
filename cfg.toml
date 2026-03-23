@@ -1,0 +1,13 @@
+[Database]
+Host = "localhost"
+Port = "3306"
+Database = "project_stock_go"
+User = "root"
+Password = "123456"
+
+[Server]
+Port = 8080
+AllowedOrigins = ["*"]
+ReadTimeout = 120
+IdleTimeout = 60
+WriteTimeout = 1

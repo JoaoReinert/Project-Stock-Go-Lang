@@ -1,0 +1,50 @@
+package user
+
+import (
+	"Desafio_Go_Lang/datastore"
+	"Desafio_Go_Lang/entities"
+	"context"
+	"database/sql"
+	"log"
+)
+
+type userRepository struct {
+	conn *sql.DB
+}
+
+func NewUserRepository(settings datastore.SettingsRepository) datastore.UserRepository {
+	return userRepository{
+		conn: settings.Connection(),
+	}
+}
+
+func (e userRepository) RegisterUser(
+	ctx context.Context,
+	user entities.User,
+) error {
+	// language=sql
+	query := `
+	INSERT INTO user (name, email, password, salt)
+	VALUES (?, ?, ?, ?)
+	`
+
+	tx, err := e.conn.Begin()
+	if err != nil {
+		log.Printf("Error in [Beggin]")
+		return err
+	}
+
+	stmt, err := tx.PrepareContext(ctx, query)
+	if err != nil {
+		log.Printf("Error in [PrepareContext]")
+		return err
+	}
+
+	_, err = stmt.ExecContext(ctx, user.Name, user.Email, user.Password, user.Salt)
+	if err != nil {
+		log.Printf("Error in [ExecContext]: %v", err)
+		return tx.Rollback()
+	}
+
+	return tx.Commit()
+}

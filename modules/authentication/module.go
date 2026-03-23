@@ -1,0 +1,106 @@
+package authentication
+
+import (
+	"Desafio_Go_Lang/domain"
+	"Desafio_Go_Lang/entities"
+	"Desafio_Go_Lang/modules"
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strings"
+
+	"github.com/gorilla/mux"
+)
+
+type moduleAuthentication struct {
+	config  entities.Config
+	useCase domain.AuthenticationUseCase
+	name    string
+	path    string
+}
+
+func NewAuthenticationModule(config entities.Config, usecase domain.AuthenticationUseCase) modules.Module {
+	return &moduleAuthentication{
+		config:  config,
+		useCase: usecase,
+		name:    "Authentication module",
+		path:    "/auth",
+	}
+}
+
+func (m moduleAuthentication) Name() string {
+	return m.name
+}
+
+func (m moduleAuthentication) Path() string {
+	return m.path
+}
+
+func (m moduleAuthentication) Setup(r *mux.Router) *mux.Router {
+	handlers := []modules.ModuleHandler{
+		{
+			Handler: m.registerUser,
+			Path:    "/register",
+			Label:   "Register a new user in database",
+			Methods: []string{http.MethodPost},
+		},
+	}
+
+	for _, h := range handlers {
+		r.HandleFunc(h.Path, h.Handler).Methods(h.Methods...)
+	}
+
+	api := r.PathPrefix("/api").Subrouter()
+
+	api.Use(m.sessionMiddleware)
+
+	return api
+}
+
+func (m *moduleAuthentication) sessionMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authHeader := r.Header.Get("Authorization")
+
+		var token string
+		if authHeader != "" {
+			token = strings.ReplaceAll(authHeader, "Bearer ", "")
+		}
+
+		if token == "" {
+			log.Printf("No token found in the request")
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (m moduleAuthentication) registerUser(w http.ResponseWriter, r *http.Request) {
+
+	ctx := r.Context()
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error in [ReadAll]: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var user entities.User
+
+	err = json.Unmarshal(body, &user)
+	if err != nil {
+		log.Printf("Error in [Unmarshal]: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = m.useCase.RegisterUser(ctx, user)
+	if err != nil {
+		log.Printf("Error in [RegisterUser]: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+}
