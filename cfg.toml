@@ -11,3 +11,8 @@ AllowedOrigins = ["*"]
 ReadTimeout = 120
 IdleTimeout = 60
 WriteTimeout = 1
+
+[Paseto]
+paseto_security_key = "173fe644073011ebadc10242ac120002"
+syync_help_paseto_security_key = "e296ee98e66949f7b739f60b0305fdef"
+user_pass_salt_secret = "0bf8df02-0730-11eb-adc1-0242ac120002"

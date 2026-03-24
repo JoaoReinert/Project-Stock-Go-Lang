@@ -3,20 +3,24 @@ package authentication
 import (
 	"Desafio_Go_Lang/datastore"
 	"Desafio_Go_Lang/domain"
+	"Desafio_Go_Lang/domain/util"
 	"Desafio_Go_Lang/entities"
 	"context"
 	"fmt"
+	"log"
 )
 
 type authenticationUseCase struct {
 	repository        datastore.AuthenticationRepository
 	pasetoSecurityKey string
+	passSaltSecret    string
 }
 
-func NewAuthenticationUseCase(repository datastore.AuthenticationRepository, pasetoSecurityKey string) domain.AuthenticationUseCase {
+func NewAuthenticationUseCase(repository datastore.AuthenticationRepository, pasetoSecurityKey string, passSaltSecret string) domain.AuthenticationUseCase {
 	return authenticationUseCase{
 		repository:        repository,
 		pasetoSecurityKey: pasetoSecurityKey,
+		passSaltSecret:    passSaltSecret,
 	}
 }
 
@@ -38,5 +42,24 @@ func (e authenticationUseCase) RegisterUser(ctx context.Context, user entities.U
 		return fmt.Errorf("the password must be longer than 6 characters")
 	}
 
-	return e.repository.RegisterUser(ctx, user)
+	salt, err := util.GenerateSalt(e.passSaltSecret)
+	if err != nil {
+		log.Printf("Error in [util.GenerateSalt]: %v", err)
+		return err
+	}
+
+	safePass, err := util.SaltAndHash(user.Password, salt)
+	if err != nil {
+		log.Printf("Error in [util.SaltAndHash]: %v", err)
+		return err
+	}
+
+	newUser := entities.User{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: safePass,
+		Salt:     salt,
+	}
+
+	return e.repository.RegisterUser(ctx, newUser)
 }

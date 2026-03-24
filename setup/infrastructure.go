@@ -18,7 +18,7 @@ func SetupModules(r *mux.Router, cfg entities.Config) {
 
 	authenticationRepository := authentication.NewAuthenticationRepository(database)
 
-	authenticationUseCase := authentication.NewAuthenticationUseCase(authenticationRepository, cfg.Paseto.PasetoSecurityKey)
+	authenticationUseCase := authentication.NewAuthenticationUseCase(authenticationRepository, cfg.Paseto.PasetoSecurityKey, cfg.Paseto.UserPassSaltSecret)
 
 	authenticationModule := authentication.NewAuthenticationModule(cfg, authenticationUseCase)
 

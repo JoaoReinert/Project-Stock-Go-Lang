@@ -35,6 +35,6 @@ type Database struct {
 }
 
 type Paseto struct {
-	PasetoSecurityKey  string `toml:"PasetoSecurityKey"`
-	UserPassSaltSecret string `toml:"UserPassSaltSecret"`
+	PasetoSecurityKey  string `toml:"paseto_security_key"`
+	UserPassSaltSecret string `toml:"user_pass_salt_secret"`
 }

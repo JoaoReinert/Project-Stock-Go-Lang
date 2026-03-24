@@ -7,5 +7,5 @@ type User struct {
 
 	Password string `json:"password"`
 
-	Salt string `json:"salt"`
+	Salt string
 }
