@@ -1,11 +1,20 @@
 package util
 
 import (
+	"Desafio_Go_Lang/entities"
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"golang.org/x/crypto/scrypt"
+	"encoding/json"
+	"fmt"
 	"io"
+	"log"
+	"strconv"
+	"time"
+
+	"github.com/google/uuid"
+	"github.com/o1egl/paseto"
+	"golang.org/x/crypto/scrypt"
 )
 
 func SaltAndHash(informationToHash string, salt string) (string, error) {
@@ -38,4 +47,51 @@ func GenerateSalt(passSaltSecret string) (string, error) {
 	hash.Write([]byte(secret))
 
 	return hex.EncodeToString(hash.Sum(buf)), nil
+}
+
+func GenerateToken(user entities.User, pasetoSecurityKey string) (*entities.UserToken, error) {
+	v2 := paseto.NewV2()
+	now := time.Now()
+	expiration := now.Add(24 * time.Hour)
+	symmetricKey := []byte(pasetoSecurityKey)
+
+	tokenUuid, err := uuid.NewRandom()
+	if err != nil {
+		log.Printf("Error in [NewRandom]: %v", err)
+		return nil, fmt.Errorf("error in generate uuid of token: %s", err.Error())
+	}
+
+	ts := entities.EmployeeSubject{
+		ID: &user.ID,
+	}
+
+	js, err := json.Marshal(ts)
+	if err != nil {
+		log.Printf("Error in [Marshal]: %v", err)
+		return nil, err
+	}
+
+	idString := strconv.FormatInt(user.ID, 10)
+
+	jsonToken := paseto.JSONToken{
+		Audience:   idString,
+		Issuer:     "/api",
+		Jti:        tokenUuid.String(),
+		Subject:    string(js),
+		Expiration: expiration,
+		IssuedAt:   now,
+		NotBefore:  now,
+	}
+
+	encripted, err := v2.Encrypt(symmetricKey, jsonToken, "")
+	if err != nil {
+		log.Printf("Error in [Encrypt]: %v", err)
+		return nil, fmt.Errorf("error in encrypting token: %s", err.Error())
+	}
+
+	token := &entities.UserToken{
+		Token: encripted,
+	}
+
+	return token, nil
 }

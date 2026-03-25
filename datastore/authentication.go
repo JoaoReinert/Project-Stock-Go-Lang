@@ -10,4 +10,9 @@ type AuthenticationRepository interface {
 		ctx context.Context,
 		user entities.User,
 	) error
+
+	CheckUserCredentials(
+		ctx context.Context,
+		user entities.UserLogin,
+	) (*entities.User, error)
 }

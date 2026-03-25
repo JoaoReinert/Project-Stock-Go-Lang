@@ -63,3 +63,34 @@ func (e authenticationUseCase) RegisterUser(ctx context.Context, user entities.U
 
 	return e.repository.RegisterUser(ctx, newUser)
 }
+
+func (e authenticationUseCase) CheckUserCredentials(ctx context.Context, user entities.UserLogin) (*entities.User, error) {
+
+	if user.Email == "" {
+		return nil, fmt.Errorf("email is required")
+	}
+
+	if user.Password == "" {
+		return nil, fmt.Errorf("email is required")
+	}
+
+	if len(user.Password) < 6 {
+		return nil, fmt.Errorf("the password must be longer than 6 characters")
+	}
+
+	userChecked, err := e.repository.CheckUserCredentials(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("error in [CheckUserCredentials] %v", err)
+	}
+
+	return userChecked, nil
+}
+
+func (e authenticationUseCase) GenerateTokenUser(user entities.User) (*entities.UserToken, error) {
+	token, err := util.GenerateToken(user, e.pasetoSecurityKey)
+	if err != nil {
+		return nil, fmt.Errorf("Error in [GenerateToken]: %v", err)
+	}
+
+	return token, nil
+}

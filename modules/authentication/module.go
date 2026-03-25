@@ -5,6 +5,7 @@ import (
 	"Desafio_Go_Lang/entities"
 	"Desafio_Go_Lang/modules"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -43,6 +44,12 @@ func (m moduleAuthentication) Setup(r *mux.Router) *mux.Router {
 			Handler: m.registerUser,
 			Path:    "/register",
 			Label:   "Register a new user in database",
+			Methods: []string{http.MethodPost},
+		},
+		{
+			Handler: m.loginUser,
+			Path:    "/login",
+			Label:   "Login user in server",
 			Methods: []string{http.MethodPost},
 		},
 	}
@@ -103,4 +110,52 @@ func (m moduleAuthentication) registerUser(w http.ResponseWriter, r *http.Reques
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+}
+
+func (m moduleAuthentication) loginUser(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error in [ReadAll]: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	var userCredentials entities.UserLogin
+
+	err = json.Unmarshal(body, &userCredentials)
+	if err != nil {
+		log.Printf("Error in [Unmarshal]: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	user, err := m.useCase.CheckUserCredentials(ctx, userCredentials)
+	if err != nil {
+		log.Printf("Error in [CheckUserCredentials]: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if user == nil {
+		http.Error(w, "Login or password incorrect", http.StatusInternalServerError)
+		return
+	}
+
+	token, err := m.useCase.GenerateTokenUser(*user)
+	if err != nil {
+		log.Printf("Error in [GenerateTokenUser]: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	jsBytes, err := json.Marshal(token)
+	if err != nil {
+		log.Printf("Error in [json.Marshal]: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = w.Write(jsBytes)
 }
