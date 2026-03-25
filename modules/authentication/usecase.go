@@ -8,6 +8,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
+
+	"github.com/o1egl/paseto"
 )
 
 type authenticationUseCase struct {
@@ -93,4 +96,28 @@ func (e authenticationUseCase) GenerateTokenUser(user entities.User) (*entities.
 	}
 
 	return token, nil
+}
+
+func (e authenticationUseCase) CheckDefaultSecurityToken(
+	ctx context.Context,
+	token entities.UserToken,
+) (*entities.UserToken, error) {
+	symmetricKey := []byte(e.pasetoSecurityKey)
+
+	now := time.Now()
+
+	var payload paseto.JSONToken
+	var footer string
+
+	_, err := paseto.Parse(token.Token, &payload, &footer, symmetricKey, nil)
+	if err != nil {
+		return nil, fmt.Errorf("erro token: %s", err.Error())
+	}
+
+	if now.After(payload.Expiration) {
+		return nil, fmt.Errorf("token expirado")
+	}
+
+	//return user, nil
+	return nil, nil
 }

@@ -11,4 +11,9 @@ type AuthenticationUseCase interface {
 	CheckUserCredentials(ctx context.Context, user entities.UserLogin) (*entities.User, error)
 
 	GenerateTokenUser(user entities.User) (*entities.UserToken, error)
+
+	CheckDefaultSecurityToken(
+		ctx context.Context,
+		token entities.UserToken,
+	) (*entities.UserToken, error)
 }

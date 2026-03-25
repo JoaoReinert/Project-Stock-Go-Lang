@@ -1,7 +1,8 @@
 create table if not exists category
 (
     id   int auto_increment primary key,
-    name varchar(150) null
+    name varchar(150) null,
+    status_code TINYINT  DEFAULT 0 NOT NULL
 );
 
 create table if not exists sub_category
