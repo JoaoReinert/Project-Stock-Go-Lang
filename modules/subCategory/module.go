@@ -1,66 +1,63 @@
-package category
+package subCategory
 
 import (
 	"Desafio_Go_Lang/domain"
 	"Desafio_Go_Lang/entities"
 	"Desafio_Go_Lang/modules"
 	"encoding/json"
+	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/gorilla/mux"
 )
 
-type moduleCategory struct {
-	useCase domain.CategoryUseCase
+type moduleSubCategory struct {
+	useCase domain.SubCategoryUseCase
 	path    string
 	name    string
 }
 
-func NewCategoryModule(
-	useCase domain.CategoryUseCase,
-) modules.Module {
-	return moduleCategory{
+func NewSubCategoryModule(useCase domain.SubCategoryUseCase) modules.Module {
+	return moduleSubCategory{
 		useCase: useCase,
-		name:    "Category module",
-		path:    "/category",
+		name:    "SubCategory module",
+		path:    "/subCategory",
 	}
 }
 
-func (m moduleCategory) Name() string {
+func (m moduleSubCategory) Name() string {
 	return m.name
 }
 
-func (m moduleCategory) Path() string {
+func (m moduleSubCategory) Path() string {
 	return m.path
 }
 
-func (m moduleCategory) Setup(r *mux.Router) *mux.Router {
+func (m moduleSubCategory) Setup(r *mux.Router) *mux.Router {
 	handlers := []modules.ModuleHandler{
 		{
-			Handler: m.registerCategory,
+			Handler: m.registerSubCategory,
 			Path:    "/register",
-			Label:   "Register category in database",
+			Label:   "Register subCategory in database",
 			Methods: []string{http.MethodPost},
 		},
 		{
-			Handler: m.updateCategory,
+			Handler: m.updateSubCategory,
 			Path:    "/update",
-			Label:   "Update category in database",
+			Label:   "Update subCategory in database",
 			Methods: []string{http.MethodPost},
 		},
 		{
-			Handler: m.deleteCategory,
+			Handler: m.deleteSubCategory,
 			Path:    "/delete/{id}",
-			Label:   "Delete category in database",
+			Label:   "Delete subCategory in database",
 			Methods: []string{http.MethodDelete},
 		},
 		{
-			Handler: m.detailsCategory,
+			Handler: m.detailsSubCategory,
 			Path:    "/details/{id}",
-			Label:   "Get details category in database",
+			Label:   "Get details subCategory in database",
 			Methods: []string{http.MethodGet},
 		},
 	}
@@ -72,25 +69,25 @@ func (m moduleCategory) Setup(r *mux.Router) *mux.Router {
 	return r
 }
 
-func (m moduleCategory) registerCategory(w http.ResponseWriter, r *http.Request) {
+func (m moduleSubCategory) registerSubCategory(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error in [ReadAll]: %v", err)
+		log.Printf("Error in [ReadAll] %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	var category entities.Category
-	err = json.Unmarshal(body, &category)
+	var subCategory entities.SubCategory
+	err = json.Unmarshal(body, &subCategory)
 	if err != nil {
 		log.Printf("Error in [Unmarshal]: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = m.useCase.RegisterCategory(ctx, category)
+	err = m.useCase.RegisterSubCategory(ctx, subCategory)
 	if err != nil {
 		log.Printf("Error in [RegisterCategory]")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -98,33 +95,33 @@ func (m moduleCategory) registerCategory(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (m moduleCategory) updateCategory(w http.ResponseWriter, r *http.Request) {
+func (m moduleSubCategory) updateSubCategory(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error in [ReadAll]: %v", err)
+		log.Printf("Error in [ReadAll] %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	var category entities.Category
-	err = json.Unmarshal(body, &category)
+	var subCategory entities.SubCategory
+	err = json.Unmarshal(body, &subCategory)
 	if err != nil {
 		log.Printf("Error in [Unmarshal]: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	err = m.useCase.UpdateCategory(ctx, category)
+	err = m.useCase.UpdateSubCategory(ctx, subCategory)
 	if err != nil {
-		log.Printf("Error in [UpdateCategory]")
+		log.Printf("Error in [UpdateSubCategory]")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func (m moduleCategory) deleteCategory(w http.ResponseWriter, r *http.Request) {
+func (m moduleSubCategory) deleteSubCategory(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	vars := mux.Vars(r)
@@ -137,19 +134,19 @@ func (m moduleCategory) deleteCategory(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	category := entities.Category{
+	subCategory := entities.SubCategory{
 		ID: int64(id),
 	}
 
-	err = m.useCase.DeleteCategory(ctx, category)
+	err = m.useCase.DeleteSubCategory(ctx, subCategory)
 	if err != nil {
-		log.Printf("Error in [DeleteCategory]")
+		log.Printf("Error in [DeleteSubCategory]")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
 
-func (m moduleCategory) detailsCategory(w http.ResponseWriter, r *http.Request) {
+func (m moduleSubCategory) detailsSubCategory(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	vars := mux.Vars(r)
@@ -162,18 +159,18 @@ func (m moduleCategory) detailsCategory(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	category := entities.Category{
+	subCategory := entities.SubCategory{
 		ID: int64(id),
 	}
 
-	categoryDetails, err := m.useCase.DetailsCategory(ctx, category)
+	subCategoryDetails, err := m.useCase.DetailsSubCategory(ctx, subCategory)
 	if err != nil {
-		log.Printf("Error in [DetailsCategory]")
+		log.Printf("Error in [DetailsSubCategory]")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	response, err := json.Marshal(categoryDetails)
+	response, err := json.Marshal(subCategoryDetails)
 	if err != nil {
 		log.Printf("Error in [Marshal]: %v", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

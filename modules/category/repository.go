@@ -84,7 +84,7 @@ func (c categoryRepository) DetailsCategory(
 	SELECT c.id,
 		   c.name	
 	FROM category c
-	where id = ?
+	WHERE id = ?
 `
 	var details entities.Category
 

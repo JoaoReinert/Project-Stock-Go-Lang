@@ -6,6 +6,7 @@ import (
 	"Desafio_Go_Lang/modules/authentication"
 	"Desafio_Go_Lang/modules/category"
 	"Desafio_Go_Lang/modules/settings"
+	"Desafio_Go_Lang/modules/subCategory"
 	"log/slog"
 
 	"github.com/gorilla/mux"
@@ -29,8 +30,15 @@ func SetupModules(r *mux.Router, cfg entities.Config) {
 
 	categoryModule := category.NewCategoryModule(categoryUseCase)
 
+	subCategoryRepository := subCategory.NewSubCategoryRepository(database)
+
+	subCategoryUseCase := subCategory.NewSubCategoryUseCase(subCategoryRepository, cfg)
+
+	subCategoryModule := subCategory.NewSubCategoryModule(subCategoryUseCase)
+
 	applicationModules := []modules.Module{
 		categoryModule,
+		subCategoryModule,
 	}
 
 	routerBase := authenticationModule.Setup(r)

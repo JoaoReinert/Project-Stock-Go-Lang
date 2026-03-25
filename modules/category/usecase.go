@@ -61,7 +61,7 @@ func (c categoryUseCase) DeleteCategory(
 ) error {
 	err := c.repository.DeleteCategory(ctx, category)
 	if err != nil {
-		log.Printf("Error in [RegisterCategory]")
+		log.Printf("Error in [DeleteCategory]")
 		return err
 	}
 
