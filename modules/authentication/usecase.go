@@ -99,9 +99,8 @@ func (e authenticationUseCase) GenerateTokenUser(user entities.User) (*entities.
 }
 
 func (e authenticationUseCase) CheckDefaultSecurityToken(
-	ctx context.Context,
 	token entities.UserToken,
-) (*entities.UserToken, error) {
+) error {
 	symmetricKey := []byte(e.pasetoSecurityKey)
 
 	now := time.Now()
@@ -111,13 +110,12 @@ func (e authenticationUseCase) CheckDefaultSecurityToken(
 
 	_, err := paseto.Parse(token.Token, &payload, &footer, symmetricKey, nil)
 	if err != nil {
-		return nil, fmt.Errorf("erro token: %s", err.Error())
+		_ = fmt.Errorf("erro token: %s", err.Error())
 	}
 
 	if now.After(payload.Expiration) {
-		return nil, fmt.Errorf("token expirado")
+		_ = fmt.Errorf("token expirado")
 	}
 
-	//return user, nil
-	return nil, nil
+	return nil
 }

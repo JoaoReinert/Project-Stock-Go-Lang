@@ -67,7 +67,6 @@ func (m moduleAuthentication) Setup(r *mux.Router) *mux.Router {
 
 func (m *moduleAuthentication) sessionMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//ctx := r.Context()
 		authHeader := r.Header.Get("Authorization")
 
 		var token string
@@ -81,17 +80,12 @@ func (m *moduleAuthentication) sessionMiddleware(next http.Handler) http.Handler
 			return
 		}
 
-		//totem, err := m.useCase.CheckDefaultSecurityToken(ctx, entities.UserToken{Token: token})
-		//if err != nil {
-		//	log.Printf("Error in [CheckDefaultSecurityToken]")
-		//	http.Error(w, err.Error(), http.StatusUnauthorized)
-		//	return
-		//}
-		//
-		//if totem == nil {
-		//	http.Error(w, "invalid token [not found totem]", http.StatusUnauthorized)
-		//	return
-		//}
+		err := m.useCase.CheckDefaultSecurityToken(entities.UserToken{Token: token})
+		if err != nil {
+			log.Printf("Error in [CheckDefaultSecurityToken]")
+			http.Error(w, err.Error(), http.StatusUnauthorized)
+			return
+		}
 
 		next.ServeHTTP(w, r)
 	})
