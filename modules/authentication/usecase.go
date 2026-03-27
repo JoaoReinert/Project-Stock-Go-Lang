@@ -74,7 +74,7 @@ func (e authenticationUseCase) CheckUserCredentials(ctx context.Context, user en
 	}
 
 	if user.Password == "" {
-		return nil, fmt.Errorf("email is required")
+		return nil, fmt.Errorf("password is required")
 	}
 
 	if len(user.Password) < 6 {

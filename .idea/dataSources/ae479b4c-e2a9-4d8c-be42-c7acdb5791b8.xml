@@ -66,43 +66,46 @@
       <Position>2</Position>
       <StoredType>varchar(150)|0s</StoredType>
     </column>
-    <index id="17" parent="7" name="PRIMARY">
+    <column id="17" parent="7" name="status_code">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>tinyint|0s</StoredType>
+    </column>
+    <index id="18" parent="7" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="18" parent="7" name="PRIMARY">
+    <key id="19" parent="7" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="19" parent="8" name="id">
+    <column id="20" parent="8" name="id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="20" parent="8" name="name">
+    <column id="21" parent="8" name="name">
       <Position>2</Position>
       <StoredType>varchar(150)|0s</StoredType>
     </column>
-    <column id="21" parent="8" name="id_sub_category">
+    <column id="22" parent="8" name="id_sub_category">
       <Position>3</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="22" parent="8" name="id_unit_stock">
+    <column id="23" parent="8" name="status_code">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
       <Position>4</Position>
-      <StoredType>int|0s</StoredType>
+      <StoredType>tinyint|0s</StoredType>
     </column>
-    <foreign-key id="23" parent="8" name="equipment_ibfk_1">
+    <foreign-key id="24" parent="8" name="equipment_ibfk_1">
       <ColNames>id_sub_category</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>sub_category</RefTableName>
-    </foreign-key>
-    <foreign-key id="24" parent="8" name="equipment_ibfk_2">
-      <ColNames>id_unit_stock</ColNames>
-      <RefColNames>id</RefColNames>
-      <RefTableName>unit_stock</RefTableName>
     </foreign-key>
     <index id="25" parent="8" name="PRIMARY">
       <ColNames>id</ColNames>
@@ -113,71 +116,72 @@
       <ColNames>id_sub_category</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="27" parent="8" name="id_unit_stock">
-      <ColNames>id_unit_stock</ColNames>
-      <Type>btree</Type>
-    </index>
-    <key id="28" parent="8" name="PRIMARY">
+    <key id="27" parent="8" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="29" parent="9" name="id">
+    <column id="28" parent="9" name="id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="30" parent="9" name="id_movement">
+    <column id="29" parent="9" name="id_movement">
       <Position>2</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="31" parent="9" name="id_stock_item">
+    <column id="30" parent="9" name="id_stock_item">
       <Position>3</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <foreign-key id="32" parent="9" name="historic_movement_ibfk_1">
+    <foreign-key id="31" parent="9" name="historic_movement_ibfk_1">
       <ColNames>id_movement</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>movement</RefTableName>
     </foreign-key>
-    <foreign-key id="33" parent="9" name="historic_movement_ibfk_2">
+    <foreign-key id="32" parent="9" name="historic_movement_ibfk_2">
       <ColNames>id_stock_item</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>stock_item</RefTableName>
     </foreign-key>
-    <index id="34" parent="9" name="PRIMARY">
+    <index id="33" parent="9" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="35" parent="9" name="id_movement">
+    <index id="34" parent="9" name="id_movement">
       <ColNames>id_movement</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="36" parent="9" name="id_stock_item">
+    <index id="35" parent="9" name="id_stock_item">
       <ColNames>id_stock_item</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="37" parent="9" name="PRIMARY">
+    <key id="36" parent="9" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="38" parent="10" name="id">
+    <column id="37" parent="10" name="id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="39" parent="10" name="date">
+    <column id="38" parent="10" name="date">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>date|0s</StoredType>
     </column>
-    <column id="40" parent="10" name="id_user">
+    <column id="39" parent="10" name="id_user">
       <NotNull>1</NotNull>
       <Position>3</Position>
+      <StoredType>int|0s</StoredType>
+    </column>
+    <column id="40" parent="10" name="type">
+      <NotNull>1</NotNull>
+      <Position>4</Position>
       <StoredType>int|0s</StoredType>
     </column>
     <foreign-key id="41" parent="10" name="movement_ibfk_1">
@@ -214,8 +218,10 @@
       <StoredType>int|0s</StoredType>
     </column>
     <column id="48" parent="11" name="status_code">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
       <Position>4</Position>
-      <StoredType>int|0s</StoredType>
+      <StoredType>tinyint|0s</StoredType>
     </column>
     <column id="49" parent="11" name="code">
       <Position>5</Position>
@@ -263,76 +269,88 @@
       <Position>3</Position>
       <StoredType>varchar(150)|0s</StoredType>
     </column>
-    <foreign-key id="59" parent="12" name="sub_category_ibfk_1">
+    <column id="59" parent="12" name="status_code">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StoredType>tinyint|0s</StoredType>
+    </column>
+    <foreign-key id="60" parent="12" name="sub_category_ibfk_1">
       <ColNames>id_category</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>category</RefTableName>
     </foreign-key>
-    <index id="60" parent="12" name="PRIMARY">
+    <index id="61" parent="12" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="61" parent="12" name="id_category">
+    <index id="62" parent="12" name="id_category">
       <ColNames>id_category</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="62" parent="12" name="PRIMARY">
+    <key id="63" parent="12" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="63" parent="13" name="id">
+    <column id="64" parent="13" name="id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="64" parent="13" name="name">
+    <column id="65" parent="13" name="name">
       <Position>2</Position>
       <StoredType>varchar(150)|0s</StoredType>
     </column>
-    <index id="65" parent="13" name="PRIMARY">
+    <column id="66" parent="13" name="status_code">
+      <DefaultExpression>0</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StoredType>tinyint|0s</StoredType>
+    </column>
+    <index id="67" parent="13" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="66" parent="13" name="PRIMARY">
+    <key id="68" parent="13" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="67" parent="14" name="id">
+    <column id="69" parent="14" name="id">
       <AutoIncrement>7</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="68" parent="14" name="name">
+    <column id="70" parent="14" name="name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="69" parent="14" name="email">
+    <column id="71" parent="14" name="email">
       <Position>3</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="70" parent="14" name="password">
+    <column id="72" parent="14" name="password">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="71" parent="14" name="salt">
+    <column id="73" parent="14" name="salt">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <index id="72" parent="14" name="PRIMARY">
+    <index id="74" parent="14" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="73" parent="14" name="PRIMARY">
+    <key id="75" parent="14" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

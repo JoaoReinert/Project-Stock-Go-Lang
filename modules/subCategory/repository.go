@@ -5,6 +5,7 @@ import (
 	"Desafio_Go_Lang/entities"
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 )
 
@@ -62,7 +63,8 @@ func (c subCategoryRepository) DeleteSubCategory(
 ) error {
 	//language=sql
 	query := `
-	DELETE FROM sub_category
+	UPDATE sub_category
+	SET status_code = 2		
 	WHERE id = ?
 `
 
@@ -95,8 +97,12 @@ func (c subCategoryRepository) DetailsSubCategory(
 		&details.IdCategory,
 	)
 	if err != nil {
-		log.Printf("Error in [QueryRowContext]")
-		return nil, err
+		if !errors.Is(err, sql.ErrNoRows) {
+			log.Printf("Error in [QueryRowContext]")
+			return nil, err
+		}
+
+		return nil, nil
 	}
 
 	return &details, nil

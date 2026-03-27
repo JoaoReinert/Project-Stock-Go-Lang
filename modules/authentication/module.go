@@ -6,7 +6,6 @@ import (
 	"Desafio_Go_Lang/modules"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
@@ -95,7 +94,7 @@ func (m moduleAuthentication) registerUser(w http.ResponseWriter, r *http.Reques
 
 	ctx := r.Context()
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error in [ReadAll]: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
