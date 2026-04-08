@@ -4,6 +4,8 @@
     <file url="file://$PROJECT_DIR$/migrate/init_database.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/modules/authentication/repository.go" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/modules/category/repository.go" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/modules/equipment/module.go" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/modules/equipment/repository.go" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/modules/subCategory/repository.go" dialect="GenericSQL" />
   </component>
 </project>

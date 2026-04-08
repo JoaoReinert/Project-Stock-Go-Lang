@@ -5,6 +5,7 @@ import (
 	"Desafio_Go_Lang/modules"
 	"Desafio_Go_Lang/modules/authentication"
 	"Desafio_Go_Lang/modules/category"
+	"Desafio_Go_Lang/modules/equipment"
 	"Desafio_Go_Lang/modules/settings"
 	"Desafio_Go_Lang/modules/subCategory"
 	"log/slog"
@@ -36,9 +37,16 @@ func SetupModules(r *mux.Router, cfg entities.Config) {
 
 	subCategoryModule := subCategory.NewSubCategoryModule(subCategoryUseCase)
 
+	equipmentRepository := equipment.NewEquipmentRepository(database)
+
+	equipmentUseCase := equipment.NewEquipmentUseCase(equipmentRepository, cfg)
+
+	equipmentModule := equipment.NewEquipmentModule(equipmentUseCase)
+
 	applicationModules := []modules.Module{
 		categoryModule,
 		subCategoryModule,
+		equipmentModule,
 	}
 
 	routerBase := authenticationModule.Setup(r)

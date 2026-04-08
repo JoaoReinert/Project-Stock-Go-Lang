@@ -48,7 +48,7 @@ func (c categoryUseCase) UpdateCategory(
 
 	err := c.repository.UpdateCategory(ctx, category)
 	if err != nil {
-		log.Printf("Error in [RegisterCategory]")
+		log.Printf("Error in [UpdateCategory]")
 		return err
 	}
 
