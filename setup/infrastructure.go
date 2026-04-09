@@ -7,7 +7,8 @@ import (
 	"Desafio_Go_Lang/modules/category"
 	"Desafio_Go_Lang/modules/equipment"
 	"Desafio_Go_Lang/modules/settings"
-	"Desafio_Go_Lang/modules/subCategory"
+	"Desafio_Go_Lang/modules/sub_category"
+	unitStock "Desafio_Go_Lang/modules/unit_stock"
 	"log/slog"
 
 	"github.com/gorilla/mux"
@@ -31,11 +32,11 @@ func SetupModules(r *mux.Router, cfg entities.Config) {
 
 	categoryModule := category.NewCategoryModule(categoryUseCase)
 
-	subCategoryRepository := subCategory.NewSubCategoryRepository(database)
+	subCategoryRepository := sub_category.NewSubCategoryRepository(database)
 
-	subCategoryUseCase := subCategory.NewSubCategoryUseCase(subCategoryRepository, cfg)
+	subCategoryUseCase := sub_category.NewSubCategoryUseCase(subCategoryRepository, cfg)
 
-	subCategoryModule := subCategory.NewSubCategoryModule(subCategoryUseCase)
+	subCategoryModule := sub_category.NewSubCategoryModule(subCategoryUseCase)
 
 	equipmentRepository := equipment.NewEquipmentRepository(database)
 
@@ -43,10 +44,17 @@ func SetupModules(r *mux.Router, cfg entities.Config) {
 
 	equipmentModule := equipment.NewEquipmentModule(equipmentUseCase)
 
+	unitStockRepository := unitStock.NewUnitStockRepository(database)
+
+	unitStockUseCase := unitStock.NewUnitStockUseCase(unitStockRepository, cfg)
+
+	unitStockModule := unitStock.NewUnitStockModule(unitStockUseCase)
+
 	applicationModules := []modules.Module{
 		categoryModule,
 		subCategoryModule,
 		equipmentModule,
+		unitStockModule,
 	}
 
 	routerBase := authenticationModule.Setup(r)

@@ -83,7 +83,7 @@ func (e equipmentUseCase) DetailsEquipment(
 
 	equipmentDetails, err := e.repository.DetailsEquipment(ctx, equipment)
 	if err != nil {
-		log.Printf("Error in [DetailsCategory]")
+		log.Printf("Error in [DetailsEquipment]")
 		return nil, err
 	}
 

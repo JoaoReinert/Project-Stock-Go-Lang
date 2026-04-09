@@ -1,4 +1,4 @@
-package subCategory
+package sub_category
 
 import (
 	"Desafio_Go_Lang/datastore"

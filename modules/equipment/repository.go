@@ -25,12 +25,13 @@ func (e equipmentRepository) RegisterEquipment(
 ) error {
 	//language=sql
 	query := `
-INSERT INTO equipment (name, id_sub_category, status_code)
-values (?, ?, ?)
-`
+	INSERT INTO equipment (name, id_sub_category, status_code)
+	values (?, ?, ?)
+	`
 
 	_, err := e.conn.ExecContext(
-		ctx, query,
+		ctx,
+		query,
 		equipment.Name,
 		equipment.IdSubCategory,
 		0,
@@ -56,7 +57,8 @@ func (e equipmentRepository) UpdateEquipment(
 	WHERE id = ?
     `
 
-	_, err := e.conn.ExecContext(ctx,
+	_, err := e.conn.ExecContext(
+		ctx,
 		query,
 		equipment.Name,
 		equipment.IdSubCategory,
