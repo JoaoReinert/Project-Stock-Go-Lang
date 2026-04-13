@@ -6,6 +6,7 @@
     <file url="file://$PROJECT_DIR$/modules/category/repository.go" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/modules/equipment/module.go" dialect="GenericSQL" />
     <file url="file://$PROJECT_DIR$/modules/equipment/repository.go" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/modules/subCategory/repository.go" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/modules/stock_item/repository.go" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/modules/unit_stock/repository.go" dialect="GenericSQL" />
   </component>
 </project>

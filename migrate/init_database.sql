@@ -77,3 +77,8 @@ create table if not exists historic_movement
     foreign key (id_stock_item) references stock_item (id)
 );
 
+alter table stock_item
+add column type_movement TINYINT DEFAULT 0 NOT NULL;
+
+alter table stock_item
+drop column code;

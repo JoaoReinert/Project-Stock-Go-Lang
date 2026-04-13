@@ -7,6 +7,7 @@ import (
 	"Desafio_Go_Lang/modules/category"
 	"Desafio_Go_Lang/modules/equipment"
 	"Desafio_Go_Lang/modules/settings"
+	"Desafio_Go_Lang/modules/stock_item"
 	"Desafio_Go_Lang/modules/sub_category"
 	unitStock "Desafio_Go_Lang/modules/unit_stock"
 	"log/slog"
@@ -50,11 +51,18 @@ func SetupModules(r *mux.Router, cfg entities.Config) {
 
 	unitStockModule := unitStock.NewUnitStockModule(unitStockUseCase)
 
+	stockItemRepository := stock_item.NewStockItemRepository(database)
+
+	stockItemUseCase := stock_item.NewStockItemUseCase(stockItemRepository, cfg)
+
+	stockItemModule := stock_item.NewStockItemModule(stockItemUseCase)
+
 	applicationModules := []modules.Module{
 		categoryModule,
 		subCategoryModule,
 		equipmentModule,
 		unitStockModule,
+		stockItemModule,
 	}
 
 	routerBase := authenticationModule.Setup(r)
