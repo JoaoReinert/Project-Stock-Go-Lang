@@ -29,24 +29,71 @@ func (s stockItemRepository) AddStockItem(
 	}
 
 	//language=sql
+	queryMovement := `
+	INSERT INTO movement (date, id_user, type)
+	VALUES (CURRENT_TIMESTAMP, ?, 0)
+	`
+
+	resultMovement, err := tx.ExecContext(
+		ctx,
+		queryMovement,
+		7,
+	)
+	if err != nil {
+		log.Printf("Error in [ExecContext], %v", err)
+		_ = tx.Rollback()
+		return err
+	}
+
+	idMovement, err := resultMovement.LastInsertId()
+	if err != nil {
+		log.Printf("Error in [LastInsertId], %v", err)
+		_ = tx.Rollback()
+		return err
+	}
+	//language=sql
 	query := `
-	INSERT INTO stock_item (id_equipment, id_unit_stock, type_movement)
-	values (?, ?, ?)
+	INSERT INTO stock_item (id_equipment, id_unit_stock)
+	VALUES (?, ?)
+	`
+
+	//language=sql
+	queryHistoric := `
+	INSERT INTO historic_movement (id_movement, id_stock_item)
+	VALUES (?, ?)
 	`
 
 	quantity := int(stockItem.Quantity)
 
 	for i := 0; i < quantity; i++ {
-		_, err := tx.ExecContext(
+		result, err := tx.ExecContext(
 			ctx,
 			query,
 			stockItem.IdEquipment,
 			stockItem.IdUnitStock,
-			0,
 		)
-
 		if err != nil {
 			log.Printf("Error in [ExecContext], %v", err)
+			_ = tx.Rollback()
+			return err
+		}
+
+		id, err := result.LastInsertId()
+		if err != nil {
+			log.Printf("Error in [LastInsertId], %v", err)
+			_ = tx.Rollback()
+			return err
+		}
+
+		_, err = tx.ExecContext(
+			ctx,
+			queryHistoric,
+			idMovement,
+			id,
+		)
+		if err != nil {
+			log.Printf("Error in [ExecContext], %v", err)
+			_ = tx.Rollback()
 			return err
 		}
 	}
@@ -69,24 +116,69 @@ func (s stockItemRepository) RemoveStockItem(
 	}
 
 	//language=sql
+	queryMovement := `
+	INSERT INTO movement (date, id_user, type)
+	VALUES (CURRENT_TIMESTAMP, ?, 1)
+	`
+
+	resultMovement, err := tx.ExecContext(
+		ctx,
+		queryMovement,
+		7,
+	)
+	if err != nil {
+		log.Printf("Error in [ExecContext], %v", err)
+		_ = tx.Rollback()
+		return err
+	}
+	idMovement, err := resultMovement.LastInsertId()
+	if err != nil {
+		log.Printf("Error in [LastInsertId], %v", err)
+		_ = tx.Rollback()
+		return err
+	}
+	//language=sql
 	query := `
-	INSERT INTO stock_item (id_equipment, id_unit_stock, type_movement)
-	values (?, ?, ?)
+	INSERT INTO stock_item (id_equipment, id_unit_stock)
+	values (?, ?)
+	`
+	//language=sql
+	queryHistoric := `
+	INSERT INTO historic_movement (id_movement, id_stock_item)
+	VALUES (?, ?)
 	`
 
 	quantity := int(stockItem.Quantity)
 
 	for i := 0; i < quantity; i++ {
-		_, err := tx.ExecContext(
+		result, err := tx.ExecContext(
 			ctx,
 			query,
 			stockItem.IdEquipment,
 			stockItem.IdUnitStock,
-			1,
 		)
-
 		if err != nil {
 			log.Printf("Error in [ExecContext], %v", err)
+			_ = tx.Rollback()
+			return err
+		}
+
+		id, err := result.LastInsertId()
+		if err != nil {
+			log.Printf("Error in [LastInsertId], %v", err)
+			_ = tx.Rollback()
+			return err
+		}
+
+		_, err = tx.ExecContext(
+			ctx,
+			queryHistoric,
+			idMovement,
+			id,
+		)
+		if err != nil {
+			log.Printf("Error in [ExecContext], %v", err)
+			_ = tx.Rollback()
 			return err
 		}
 	}
@@ -107,11 +199,11 @@ func (s stockItemRepository) VerifyStock(
 	SELECT (
 	    (SELECT COUNT(*) FROM stock_item 
 	    WHERE id_equipment = ?
-	    AND type_movement = 0) 
+	    AND status_code = 0) 
 	    -
 	    (SELECT COUNT(*) FROM stock_item 
 	    WHERE id_equipment = ?
-	    AND type_movement = 1)
+	    AND status_code = 2)
 	)
 	`
 
@@ -120,32 +212,6 @@ func (s stockItemRepository) VerifyStock(
 		ctx,
 		query,
 		stockItem.IdEquipment,
-		stockItem.IdEquipment,
-	).Scan(&number)
-
-	if err != nil {
-		log.Printf("Error in [QueryRowContext]: %v", err)
-		return 0, err
-	}
-
-	return number, nil
-}
-
-func (s stockItemRepository) VerifyQuantityItemsStock(
-	ctx context.Context,
-	stockItem entities.StockItem,
-) (int, error) {
-	//language=sql
-	query := `
-	    SELECT COUNT(*) FROM stock_item 
-	    WHERE id_equipment = ?
-	    AND type_movement = 0
-	`
-
-	var number int
-	err := s.conn.QueryRowContext(
-		ctx,
-		query,
 		stockItem.IdEquipment,
 	).Scan(&number)
 

@@ -20,9 +20,4 @@ type StockItemRepository interface {
 		ctx context.Context,
 		stockItem entities.StockItem,
 	) (int, error)
-
-	VerifyQuantityItemsStock(
-		ctx context.Context,
-		stockItem entities.StockItem,
-	) (int, error)
 }

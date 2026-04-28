@@ -62,21 +62,12 @@ func (u stockItemUseCase) RemoveStockItem(
 		return fmt.Errorf("quantity required")
 	}
 
-	quantity, errQuantity := u.repository.VerifyQuantityItemsStock(ctx, stockItem)
-	if errQuantity != nil {
-		return errQuantity
-	}
-
-	if quantity < int(stockItem.Quantity) {
-		return fmt.Errorf("insufficient stock")
-	}
-
 	stock, errStock := u.repository.VerifyStock(ctx, stockItem)
 	if errStock != nil {
 		return errStock
 	}
 
-	if stock <= 0 {
+	if stock < int(stockItem.Quantity) {
 		return fmt.Errorf("insufficient stock")
 	}
 

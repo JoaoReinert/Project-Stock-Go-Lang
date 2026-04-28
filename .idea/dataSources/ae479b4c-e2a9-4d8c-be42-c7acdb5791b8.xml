@@ -23735,7 +23735,7 @@ VARIABLE_NAME</ColNames>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="4453" parent="400" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>121</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
@@ -23754,136 +23754,130 @@ VARIABLE_NAME</ColNames>
       <Position>4</Position>
       <StoredType>tinyint|0s</StoredType>
     </column>
-    <column id="4457" parent="400" name="type_movement">
-      <DefaultExpression>0</DefaultExpression>
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StoredType>tinyint|0s</StoredType>
-    </column>
-    <foreign-key id="4458" parent="400" name="stock_item_ibfk_1">
+    <foreign-key id="4457" parent="400" name="stock_item_ibfk_1">
       <ColNames>id_equipment</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>equipment</RefTableName>
     </foreign-key>
-    <foreign-key id="4459" parent="400" name="stock_item_ibfk_2">
+    <foreign-key id="4458" parent="400" name="stock_item_ibfk_2">
       <ColNames>id_unit_stock</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>unit_stock</RefTableName>
     </foreign-key>
-    <index id="4460" parent="400" name="PRIMARY">
+    <index id="4459" parent="400" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="4461" parent="400" name="id_equipment">
+    <index id="4460" parent="400" name="id_equipment">
       <ColNames>id_equipment</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="4462" parent="400" name="id_unit_stock">
+    <index id="4461" parent="400" name="id_unit_stock">
       <ColNames>id_unit_stock</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="4463" parent="400" name="PRIMARY">
+    <key id="4462" parent="400" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="4464" parent="401" name="id">
+    <column id="4463" parent="401" name="id">
       <AutoIncrement>2</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="4465" parent="401" name="id_category">
+    <column id="4464" parent="401" name="id_category">
       <Position>2</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="4466" parent="401" name="name">
+    <column id="4465" parent="401" name="name">
       <Position>3</Position>
       <StoredType>varchar(150)|0s</StoredType>
     </column>
-    <column id="4467" parent="401" name="status_code">
+    <column id="4466" parent="401" name="status_code">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>tinyint|0s</StoredType>
     </column>
-    <foreign-key id="4468" parent="401" name="sub_category_ibfk_1">
+    <foreign-key id="4467" parent="401" name="sub_category_ibfk_1">
       <ColNames>id_category</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>category</RefTableName>
     </foreign-key>
-    <index id="4469" parent="401" name="PRIMARY">
+    <index id="4468" parent="401" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="4470" parent="401" name="id_category">
+    <index id="4469" parent="401" name="id_category">
       <ColNames>id_category</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="4471" parent="401" name="PRIMARY">
+    <key id="4470" parent="401" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="4472" parent="402" name="id">
+    <column id="4471" parent="402" name="id">
       <AutoIncrement>1</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="4473" parent="402" name="name">
+    <column id="4472" parent="402" name="name">
       <Position>2</Position>
       <StoredType>varchar(150)|0s</StoredType>
     </column>
-    <column id="4474" parent="402" name="status_code">
+    <column id="4473" parent="402" name="status_code">
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>tinyint|0s</StoredType>
     </column>
-    <index id="4475" parent="402" name="PRIMARY">
+    <index id="4474" parent="402" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="4476" parent="402" name="PRIMARY">
+    <key id="4475" parent="402" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <column id="4477" parent="403" name="id">
+    <column id="4476" parent="403" name="id">
       <AutoIncrement>9</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="4478" parent="403" name="name">
+    <column id="4477" parent="403" name="name">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="4479" parent="403" name="email">
+    <column id="4478" parent="403" name="email">
       <Position>3</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="4480" parent="403" name="password">
+    <column id="4479" parent="403" name="password">
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="4481" parent="403" name="salt">
+    <column id="4480" parent="403" name="salt">
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <index id="4482" parent="403" name="PRIMARY">
+    <index id="4481" parent="403" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="4483" parent="403" name="PRIMARY">
+    <key id="4482" parent="403" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>

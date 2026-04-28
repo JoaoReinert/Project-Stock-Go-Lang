@@ -25,8 +25,8 @@ func (e equipmentRepository) RegisterEquipment(
 ) error {
 	//language=sql
 	query := `
-	INSERT INTO equipment (name, id_sub_category, status_code)
-	values (?, ?, ?)
+	INSERT INTO equipment (name, id_sub_category)
+	values (?, ?)
 	`
 
 	_, err := e.conn.ExecContext(
@@ -34,7 +34,6 @@ func (e equipmentRepository) RegisterEquipment(
 		query,
 		equipment.Name,
 		equipment.IdSubCategory,
-		0,
 	)
 
 	if err != nil {
