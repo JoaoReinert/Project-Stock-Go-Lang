@@ -24,6 +24,7 @@ func NewStockItemUseCase(repository datastore.StockItemRepository, cfg entities.
 func (u stockItemUseCase) AddStockItem(
 	ctx context.Context,
 	stockItem entities.StockItem,
+	userId int64,
 ) error {
 	if stockItem.IdEquipment == 0 {
 		return fmt.Errorf("id equipment required")
@@ -37,7 +38,7 @@ func (u stockItemUseCase) AddStockItem(
 		return fmt.Errorf("quantity required")
 	}
 
-	err := u.repository.AddStockItem(ctx, stockItem)
+	err := u.repository.AddStockItem(ctx, stockItem, userId)
 	if err != nil {
 		log.Printf("Error in [RegisterStockItem]")
 		return err

@@ -15,4 +15,6 @@ type AuthenticationRepository interface {
 		ctx context.Context,
 		user entities.UserLogin,
 	) (*entities.User, error)
+
+	GetUser(c context.Context, user entities.EmployeeSubject) (*entities.User, error)
 }

@@ -4,6 +4,7 @@ import (
 	"Desafio_Go_Lang/domain"
 	"Desafio_Go_Lang/entities"
 	"Desafio_Go_Lang/modules"
+	"context"
 	"encoding/json"
 	"io"
 	"log"
@@ -66,7 +67,12 @@ func (m moduleAuthentication) Setup(r *mux.Router) *mux.Router {
 
 func (m *moduleAuthentication) sessionMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		c := r.Context()
+
 		authHeader := r.Header.Get("Authorization")
+
+		var user *entities.User
+		var err error
 
 		var token string
 		if authHeader != "" {
@@ -79,14 +85,16 @@ func (m *moduleAuthentication) sessionMiddleware(next http.Handler) http.Handler
 			return
 		}
 
-		err := m.useCase.CheckDefaultSecurityToken(entities.UserToken{Token: token})
+		user, err = m.useCase.CheckDefaultSecurityToken(c, entities.UserToken{Token: token})
 		if err != nil {
 			log.Printf("Error in [CheckDefaultSecurityToken]")
 			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		ctx := context.WithValue(c, "user", user)
+
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 

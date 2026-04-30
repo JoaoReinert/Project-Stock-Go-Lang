@@ -6,6 +6,7 @@ import (
 	"Desafio_Go_Lang/domain/util"
 	"Desafio_Go_Lang/entities"
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
@@ -99,14 +100,16 @@ func (e authenticationUseCase) GenerateTokenUser(user entities.User) (*entities.
 }
 
 func (e authenticationUseCase) CheckDefaultSecurityToken(
+	c context.Context,
 	token entities.UserToken,
-) error {
+) (*entities.User, error) {
 	symmetricKey := []byte(e.pasetoSecurityKey)
 
 	now := time.Now()
 
 	var payload paseto.JSONToken
 	var footer string
+	var subject entities.EmployeeSubject
 
 	_, err := paseto.Parse(token.Token, &payload, &footer, symmetricKey, nil)
 	if err != nil {
@@ -117,5 +120,17 @@ func (e authenticationUseCase) CheckDefaultSecurityToken(
 		_ = fmt.Errorf("token expirado")
 	}
 
-	return nil
+	err = json.Unmarshal([]byte(payload.Subject), &subject)
+	if err != nil {
+		log.Printf("Error in [Unmarshal]: %v", err)
+		return nil, err
+	}
+
+	user, err := e.repository.GetUser(c, subject)
+	if err != nil {
+		log.Printf("Error in [GetUser]: %v", err)
+		return nil, err
+	}
+
+	return user, nil
 }

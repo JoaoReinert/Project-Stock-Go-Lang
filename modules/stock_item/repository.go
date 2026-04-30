@@ -21,6 +21,7 @@ func NewStockItemRepository(settings datastore.SettingsRepository) datastore.Sto
 func (s stockItemRepository) AddStockItem(
 	ctx context.Context,
 	stockItem entities.StockItem,
+	employeeId int64,
 ) error {
 
 	tx, err := s.conn.BeginTx(ctx, nil)
@@ -37,7 +38,7 @@ func (s stockItemRepository) AddStockItem(
 	resultMovement, err := tx.ExecContext(
 		ctx,
 		queryMovement,
-		7,
+		employeeId,
 	)
 	if err != nil {
 		log.Printf("Error in [ExecContext], %v", err)
@@ -108,6 +109,7 @@ func (s stockItemRepository) AddStockItem(
 func (s stockItemRepository) RemoveStockItem(
 	ctx context.Context,
 	stockItem entities.StockItem,
+	userId int64,
 ) error {
 
 	tx, err := s.conn.BeginTx(ctx, nil)
@@ -124,7 +126,7 @@ func (s stockItemRepository) RemoveStockItem(
 	resultMovement, err := tx.ExecContext(
 		ctx,
 		queryMovement,
-		7,
+		userId,
 	)
 	if err != nil {
 		log.Printf("Error in [ExecContext], %v", err)

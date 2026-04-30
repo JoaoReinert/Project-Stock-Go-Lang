@@ -13,6 +13,7 @@ type AuthenticationUseCase interface {
 	GenerateTokenUser(user entities.User) (*entities.UserToken, error)
 
 	CheckDefaultSecurityToken(
+		c context.Context,
 		token entities.UserToken,
-	) error
+	) (*entities.User, error)
 }

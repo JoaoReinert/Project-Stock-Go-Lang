@@ -2,13 +2,15 @@ package stock_item
 
 import (
 	"Desafio_Go_Lang/domain"
+	"Desafio_Go_Lang/domain/util"
 	"Desafio_Go_Lang/entities"
 	"Desafio_Go_Lang/modules"
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type moduleStockItem struct {
@@ -61,6 +63,13 @@ func (m moduleStockItem) Setup(r *mux.Router) *mux.Router {
 func (m moduleStockItem) addStockItem(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
+	user, err := util.GetUser(r)
+	if err != nil {
+		log.Printf("Error in [GetUser]: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Erro in [ReadAll]: %v", err)
@@ -76,7 +85,7 @@ func (m moduleStockItem) addStockItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = m.useCase.AddStockItem(ctx, stockItem)
+	err = m.useCase.AddStockItem(ctx, stockItem, user.ID)
 	if err != nil {
 		log.Printf("Error in [RegisterStockItem]")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -87,6 +96,13 @@ func (m moduleStockItem) addStockItem(w http.ResponseWriter, r *http.Request) {
 func (m moduleStockItem) removeStockItem(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
+	user, err := util.GetUser(r)
+	if err != nil {
+		log.Printf("Error in [GetUser]: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Erro in [ReadAll]: %v", err)
@@ -102,7 +118,7 @@ func (m moduleStockItem) removeStockItem(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = m.useCase.RemoveStockItem(ctx, stockItem)
+	err = m.useCase.RemoveStockItem(ctx, stockItem, user.ID)
 	if err != nil {
 		log.Printf("Error in [RemoveStockItem]")
 		http.Error(w, err.Error(), http.StatusInternalServerError)

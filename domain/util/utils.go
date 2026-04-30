@@ -6,9 +6,11 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -94,4 +96,13 @@ func GenerateToken(user entities.User, pasetoSecurityKey string) (*entities.User
 	}
 
 	return token, nil
+}
+
+func GetUser(r *http.Request) (*entities.User, error) {
+	contextUser := r.Context().Value("user")
+	if contextUser == nil {
+		return nil, errors.New("user not found in the request")
+	}
+
+	return contextUser.(*entities.User), nil
 }

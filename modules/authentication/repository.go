@@ -59,7 +59,8 @@ func (e authenticationRepository) CheckUserCredentials(
 
 	// language=sql
 	query := `
-	SELECT u.name,
+	SELECT u.id,
+	       u.name,
 	       u.email,
 	       u.password,
 	       u.salt
@@ -72,6 +73,7 @@ func (e authenticationRepository) CheckUserCredentials(
 	var salt string
 
 	err := e.conn.QueryRowContext(ctx, query, user.Email).Scan(
+		&details.ID,
 		&details.Name,
 		&details.Email,
 		&pass,
@@ -93,4 +95,37 @@ func (e authenticationRepository) CheckUserCredentials(
 	}
 
 	return nil, errors.New(fmt.Sprintf("user not found [%s]", user.Email))
+}
+
+func (e authenticationRepository) GetUser(
+	c context.Context,
+	user entities.EmployeeSubject,
+) (*entities.User, error) {
+	// language=sql
+	query := `
+	SELECT u.id,
+	       u.name,
+	       u.email
+	FROM user u
+	WHERE u.id = ?
+	`
+
+	var details entities.User
+
+	err := e.conn.QueryRowContext(c, query, user.ID).Scan(
+		&details.ID,
+		&details.Name,
+		&details.Email,
+	)
+
+	if err != nil {
+		if !errors.Is(err, sql.ErrNoRows) {
+			log.Printf("Error in [QueryRowContext]")
+			return nil, err
+		}
+
+		return nil, err
+	}
+
+	return &details, nil
 }
