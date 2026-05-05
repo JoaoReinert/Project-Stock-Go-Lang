@@ -8,17 +8,17 @@ import (
 type EquipmentUseCase interface {
 	RegisterEquipment(
 		ctx context.Context,
-		category entities.Equipment,
+		equipment entities.Equipment,
 	) error
 
 	UpdateEquipment(
 		ctx context.Context,
-		category entities.Equipment,
+		equipment entities.Equipment,
 	) error
 
 	DeleteEquipment(
 		ctx context.Context,
-		category entities.Equipment,
+		equipment entities.Equipment,
 	) error
 
 	DetailsEquipment(

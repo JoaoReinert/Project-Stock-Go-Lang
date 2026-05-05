@@ -5,11 +5,12 @@ import (
 	"Desafio_Go_Lang/entities"
 	"Desafio_Go_Lang/modules"
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type moduleEquipment struct {
@@ -45,7 +46,7 @@ func (m moduleEquipment) Setup(r *mux.Router) *mux.Router {
 			Methods: []string{http.MethodPost},
 		},
 		{
-			Handler: m.registerEquipment,
+			Handler: m.updateEquipment,
 			Path:    "/update",
 			Label:   "Update equipment in database",
 			Methods: []string{http.MethodPost},
