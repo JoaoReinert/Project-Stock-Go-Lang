@@ -2,6 +2,7 @@ package statistics
 
 import (
 	"Desafio_Go_Lang/datastore"
+	"Desafio_Go_Lang/entities"
 	"context"
 	"database/sql"
 	"time"
@@ -21,7 +22,7 @@ func (s statisticsRepository) GetTotalNumberPerDate(
 	ctx context.Context,
 	startDate time.Time,
 	endDate time.Time,
-	isEntries bool,
+	isExist bool,
 ) (int, error) {
 	//language=sql
 	query := `
@@ -37,7 +38,7 @@ func (s statisticsRepository) GetTotalNumberPerDate(
 	err := s.conn.QueryRowContext(
 		ctx,
 		query,
-		isEntries,
+		isExist,
 		startDate,
 		endDate,
 	).Scan(&total)
@@ -47,4 +48,41 @@ func (s statisticsRepository) GetTotalNumberPerDate(
 	}
 
 	return total, nil
+}
+
+func (s statisticsRepository) GetBalancePerUnitStock(
+	ctx context.Context,
+) ([]entities.UnitStockBalance, error) {
+
+	//language=sql
+	query := `
+	SELECT us.name,
+	       SUM(IF(m.type = 0, 1, -1)) AS balance
+	FROM unit_stock us
+	INNER JOIN stock_item si ON si.id_unit_stock = us.id
+	INNER JOIN historic_movement hm ON hm.id_stock_item = si.id
+	INNER JOIN movement m ON m.id = hm.id_movement
+	GROUP BY us.id, us.name
+	`
+
+	rows, err := s.conn.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []entities.UnitStockBalance
+
+	for rows.Next() {
+		var item entities.UnitStockBalance
+
+		err := rows.Scan(&item.Name, &item.Balance)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, item)
+	}
+
+	return result, nil
 }

@@ -36,3 +36,16 @@ func (s statisticsUseCase) GetTotalNumberPerDate(
 
 	return total, nil
 }
+
+func (s statisticsUseCase) GetBalancePerUnitStock(
+	ctx context.Context,
+) ([]entities.UnitStockBalance, error) {
+
+	list, err := s.repository.GetBalancePerUnitStock(ctx)
+	if err != nil {
+		log.Printf("Error in [GetBalancePerUnitStock]")
+		return nil, err
+	}
+
+	return list, nil
+}

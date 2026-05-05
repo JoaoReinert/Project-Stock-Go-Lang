@@ -7,3 +7,8 @@ type UnitStock struct {
 
 	StatusCode int64 `json:"status_code"`
 }
+
+type UnitStockBalance struct {
+	Balance int64  `json:"balance"`
+	Name    string `json:"name"`
+}

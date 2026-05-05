@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"Desafio_Go_Lang/entities"
 	"context"
 	"time"
 )
@@ -12,4 +13,8 @@ type StatisticsUseCase interface {
 		endDate time.Time,
 		isEntries bool,
 	) (int, error)
+
+	GetBalancePerUnitStock(
+		ctx context.Context,
+	) ([]entities.UnitStockBalance, error)
 }
