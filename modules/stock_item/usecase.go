@@ -50,6 +50,7 @@ func (u stockItemUseCase) AddStockItem(
 func (u stockItemUseCase) RemoveStockItem(
 	ctx context.Context,
 	stockItem entities.StockItem,
+	userId int64,
 ) error {
 	if stockItem.IdEquipment == 0 {
 		return fmt.Errorf("id equipment required")
@@ -72,7 +73,7 @@ func (u stockItemUseCase) RemoveStockItem(
 		return fmt.Errorf("insufficient stock")
 	}
 
-	err := u.repository.RemoveStockItem(ctx, stockItem)
+	err := u.repository.RemoveStockItem(ctx, stockItem, userId)
 	if err != nil {
 		log.Printf("Error in [RemoveStockItem]")
 		return err

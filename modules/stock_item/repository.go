@@ -117,69 +117,78 @@ func (s stockItemRepository) RemoveStockItem(
 		return err
 	}
 
-	//language=sql
 	queryMovement := `
 	INSERT INTO movement (date, id_user, type)
 	VALUES (CURRENT_TIMESTAMP, ?, 1)
 	`
 
-	resultMovement, err := tx.ExecContext(
-		ctx,
-		queryMovement,
-		userId,
-	)
+	resultMovement, err := tx.ExecContext(ctx, queryMovement, userId)
 	if err != nil {
-		log.Printf("Error in [ExecContext], %v", err)
 		_ = tx.Rollback()
 		return err
 	}
+
 	idMovement, err := resultMovement.LastInsertId()
 	if err != nil {
-		log.Printf("Error in [LastInsertId], %v", err)
 		_ = tx.Rollback()
 		return err
 	}
-	//language=sql
-	query := `
-	INSERT INTO stock_item (id_equipment, id_unit_stock)
-	values (?, ?)
+
+	querySelect := `
+	SELECT id
+	FROM stock_item
+	WHERE id_equipment = ?
+	  AND id_unit_stock = ?
+	  AND status_code = 0
+	LIMIT ?
+	FOR UPDATE
 	`
-	//language=sql
+
+	rows, err := tx.QueryContext(
+		ctx,
+		querySelect,
+		stockItem.IdEquipment,
+		stockItem.IdUnitStock,
+		int(stockItem.Quantity),
+	)
+	if err != nil {
+		_ = tx.Rollback()
+		return err
+	}
+	defer rows.Close()
+
+	var ids []int64
+
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			_ = tx.Rollback()
+			return err
+		}
+		ids = append(ids, id)
+	}
+
+	queryUpdate := `
+	UPDATE stock_item
+	SET status_code = 1
+	WHERE id = ?
+	`
+
 	queryHistoric := `
 	INSERT INTO historic_movement (id_movement, id_stock_item)
 	VALUES (?, ?)
 	`
 
-	quantity := int(stockItem.Quantity)
+	for _, id := range ids {
 
-	for i := 0; i < quantity; i++ {
-		result, err := tx.ExecContext(
-			ctx,
-			query,
-			stockItem.IdEquipment,
-			stockItem.IdUnitStock,
-		)
+		_, err := tx.ExecContext(ctx, queryUpdate, id)
 		if err != nil {
-			log.Printf("Error in [ExecContext], %v", err)
 			_ = tx.Rollback()
 			return err
 		}
 
-		id, err := result.LastInsertId()
+		_, err = tx.ExecContext(ctx, queryHistoric, idMovement, id)
 		if err != nil {
-			log.Printf("Error in [LastInsertId], %v", err)
-			_ = tx.Rollback()
-			return err
-		}
-
-		_, err = tx.ExecContext(
-			ctx,
-			queryHistoric,
-			idMovement,
-			id,
-		)
-		if err != nil {
-			log.Printf("Error in [ExecContext], %v", err)
 			_ = tx.Rollback()
 			return err
 		}
