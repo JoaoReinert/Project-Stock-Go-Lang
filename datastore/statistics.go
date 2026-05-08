@@ -20,5 +20,9 @@ type StatisticsRepository interface {
 
 	GetBalancePerCategoryAndSubCategory(
 		ctx context.Context,
+	) ([]entities.CategoryAndSubCategoryBalance, error)
+
+	GetRankingPerCategory(
+		ctx context.Context,
 	) ([]entities.CategoryBalance, error)
 }

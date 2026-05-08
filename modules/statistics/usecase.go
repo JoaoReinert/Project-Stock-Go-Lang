@@ -52,10 +52,22 @@ func (s statisticsUseCase) GetBalancePerUnitStock(
 
 func (s statisticsUseCase) GetBalancePerCategoryAndSubCategory(
 	ctx context.Context,
-) ([]entities.CategoryBalance, error) {
+) ([]entities.CategoryAndSubCategoryBalance, error) {
 	list, err := s.repository.GetBalancePerCategoryAndSubCategory(ctx)
 	if err != nil {
 		log.Printf("Error in [GetBalancePerCategoryAndSubCategory]")
+		return nil, err
+	}
+
+	return list, nil
+}
+
+func (s statisticsUseCase) GetRankingPerCategory(
+	ctx context.Context,
+) ([]entities.CategoryBalance, error) {
+	list, err := s.repository.GetRankingPerCategory(ctx)
+	if err != nil {
+		log.Printf("Error in [GetRankingPerCategory]")
 		return nil, err
 	}
 

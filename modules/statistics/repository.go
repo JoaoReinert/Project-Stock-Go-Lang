@@ -89,7 +89,7 @@ func (s statisticsRepository) GetBalancePerUnitStock(
 
 func (s statisticsRepository) GetBalancePerCategoryAndSubCategory(
 	ctx context.Context,
-) ([]entities.CategoryBalance, error) {
+) ([]entities.CategoryAndSubCategoryBalance, error) {
 
 	//language=sql
 	query := `
@@ -111,10 +111,10 @@ func (s statisticsRepository) GetBalancePerCategoryAndSubCategory(
 	}
 	defer rows.Close()
 
-	var result []entities.CategoryBalance
+	var result []entities.CategoryAndSubCategoryBalance
 
 	for rows.Next() {
-		var item entities.CategoryBalance
+		var item entities.CategoryAndSubCategoryBalance
 
 		err = rows.Scan(&item.CategoryName, &item.SubCategoryName, &item.Balance)
 		if err != nil {
@@ -125,4 +125,48 @@ func (s statisticsRepository) GetBalancePerCategoryAndSubCategory(
 	}
 
 	return result, nil
+}
+
+func (s statisticsRepository) GetRankingPerCategory(
+	ctx context.Context,
+) ([]entities.CategoryBalance, error) {
+
+	//language=sql
+	query := `
+   	SELECT c.name,
+   	       count(hm.id) AS total
+   	FROM category c
+   	INNER JOIN sub_category sb ON c.id = sb.id_category
+   	INNER JOIN equipment e ON e.id_sub_category = sb.id
+   	INNER JOIN stock_item si ON si.id_equipment = e.id
+   	INNER JOIN historic_movement hm ON hm.id_stock_item = si.id
+	INNER JOIN movement m ON m.id = hm.id_movement
+   	GROUP BY c.name
+   	ORDER BY total DESC
+   	`
+
+	rows, err := s.conn.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []entities.CategoryBalance
+
+	for rows.Next() {
+		var item entities.CategoryBalance
+		err := rows.Scan(
+			&item.Name,
+			&item.Balance,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, item)
+	}
+
+	return result, nil
+
 }
