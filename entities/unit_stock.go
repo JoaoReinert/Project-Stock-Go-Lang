@@ -12,3 +12,9 @@ type UnitStockBalance struct {
 	Balance int64  `json:"balance"`
 	Name    string `json:"name"`
 }
+
+type CategoryBalance struct {
+	CategoryName    string `json:"category_name"`
+	SubCategoryName string `json:"sub_category_name"`
+	Balance         int64  `json:"balance"`
+}

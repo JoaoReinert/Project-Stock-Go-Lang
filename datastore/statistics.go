@@ -17,4 +17,8 @@ type StatisticsRepository interface {
 	GetBalancePerUnitStock(
 		ctx context.Context,
 	) ([]entities.UnitStockBalance, error)
+
+	GetBalancePerCategoryAndSubCategory(
+		ctx context.Context,
+	) ([]entities.CategoryBalance, error)
 }

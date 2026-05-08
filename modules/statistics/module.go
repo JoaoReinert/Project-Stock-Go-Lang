@@ -55,6 +55,12 @@ func (m moduleStatistics) Setup(r *mux.Router) *mux.Router {
 			Label:   "Return balance per unit stock",
 			Methods: []string{http.MethodGet},
 		},
+		{
+			Handler: m.getBalancePerCategoryAndSubCategory,
+			Path:    "/category/balance",
+			Label:   "Return balance per category and sub category",
+			Methods: []string{http.MethodGet},
+		},
 	}
 
 	for _, h := range handlers {
@@ -143,7 +149,27 @@ func (m moduleStatistics) getBalancePerUnitStock(w http.ResponseWriter, r *http.
 
 	list, err := m.useCase.GetBalancePerUnitStock(ctx)
 	if err != nil {
-		log.Printf("error in get balnce per unit stock: %v", err)
+		log.Printf("error in get balance per unit stock: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	response, err := json.Marshal(list)
+	if err != nil {
+		log.Printf("Error in [Marshal]: %v", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, _ = w.Write(response)
+}
+
+func (m moduleStatistics) getBalancePerCategoryAndSubCategory(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	list, err := m.useCase.GetBalancePerCategoryAndSubCategory(ctx)
+	if err != nil {
+		log.Printf("error in get balance per category: %v", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}

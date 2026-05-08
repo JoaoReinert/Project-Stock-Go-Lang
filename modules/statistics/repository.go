@@ -86,3 +86,43 @@ func (s statisticsRepository) GetBalancePerUnitStock(
 
 	return result, nil
 }
+
+func (s statisticsRepository) GetBalancePerCategoryAndSubCategory(
+	ctx context.Context,
+) ([]entities.CategoryBalance, error) {
+
+	//language=sql
+	query := `
+	SELECT c.name,
+	       sc.name
+		   SUM(IF(m.type = 0, 1, -1)) AS balance
+	FROM category c
+	INNER JOIN sub_category sc ON sc.id_category = c.id
+	INNER JOIN equipment e ON e.id_sub_category = sc.id
+	INNER JOIN stock_item si ON si.id_equipment = e.id
+	INNER JOIN historic_movement hm ON hm.id_stock_item = si.id
+	INNER JOIN movement m ON m.id = hm.id_movement
+	GROUP BY c.name, sc.name
+`
+
+	rows, err := s.conn.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var result []entities.CategoryBalance
+
+	for rows.Next() {
+		var item entities.CategoryBalance
+
+		err = rows.Scan(&item.CategoryName, &item.SubCategoryName, &item.Balance)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, item)
+	}
+
+	return result, nil
+}
